@@ -1,0 +1,10 @@
+{
+    "DR_IF1512": {
+        "strategyClassName": "DataRecorder", 
+        "vtSymbol": "IF1512"
+    }, 
+    "DR_IH1512": {
+        "strategyClassName": "DataRecorder", 
+        "vtSymbol": "IH1512"
+    }
+}
