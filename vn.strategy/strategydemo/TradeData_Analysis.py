@@ -7,7 +7,7 @@ import csv
 import pandas as pd
 from pandas import Series,DataFrame
 from numpy import cumsum 
-
+import matplotlib.pyplot as plt
  
 
 
@@ -35,6 +35,7 @@ class TradeData_Analysis():
         self.continuous_profit_number=0 #最大连续亏损次数
         self.continuous_loss_number=0 #最大连续盈利次数
         
+        self.cumsum_profit=0 #各个时间带你的权益
         self.max_retracement=0 #交易最大回撤
 
     def TradeData_Clean(self,filename):
@@ -108,13 +109,13 @@ class TradeData_Analysis():
         for time,value in self.profit.items():
             profit_values.append(value)
         self.total_profit=sum(profit_values)*5
-        print(self.profit)
+#         print(self.profit)
         
         #交易总亏损
         for time,value in self.loss.items():
             loss_values.append(value)
         self.total_loss=sum(loss_values)*5
-        print(self.loss)
+#         print(self.loss)
         
         #交易净利润
         self.retained_profit=self.total_profit+self.total_loss
@@ -157,7 +158,7 @@ class TradeData_Analysis():
         
         #交易最大回测
         #需要用到的变量
-        cumsum_profit=cumsum(trade)
+        self.cumsum_profit=cumsum(trade)
         maximum_switch=False
         maximum_value=0
         minimum_swith=False
@@ -165,36 +166,49 @@ class TradeData_Analysis():
         retracement=0
         retracement_list=[]
         
-        for i in range(len(cumsum_profit)):
+        for i in range(len(self.cumsum_profit)):
             if i>=2:
-                if cumsum_profit[i-1]>=cumsum_profit[i-2] and cumsum_profit[i-1]>=cumsum_profit[i]:
+                if self.cumsum_profit[i-1]>=self.cumsum_profit[i-2] and self.cumsum_profit[i-1]>=self.cumsum_profit[i]:
                     maximum_switch=True
-                    retracement=cumsum_profit[i-1]-cumsum_profit[i]
-                    maximum_value=cumsum_profit[i-1]
-                    print(retracement)
+                    retracement=self.cumsum_profit[i-1]-self.cumsum_profit[i]
+                    maximum_value=self.cumsum_profit[i-1]
                 
                 if maximum_switch==True: 
-                    if cumsum_profit[i-1] !=maximum_value and cumsum_profit[i-1]>=cumsum_profit[i]:
-                        retracement=retracement+(cumsum_profit[i-1]-cumsum_profit[i])
-                    elif cumsum_profit[i-1]<=cumsum_profit[i]:
+                    if self.cumsum_profit[i-1] !=maximum_value and self.cumsum_profit[i-1]>=self.cumsum_profit[i]:
+                        retracement=retracement+(self.cumsum_profit[i-1]-self.cumsum_profit[i])
+                    elif self.cumsum_profit[i-1]<=self.cumsum_profit[i]:
                         retracement_list.append(retracement)
                         retracement=0
                         maximum_switch=False
-            if i==len(cumsum_profit)-1:
+            if i==len(self.cumsum_profit)-1:
                 retracement_list.append(retracement)
         
         self.max_retracement=max(retracement_list)
                         
 
         #打印出各个绩效值
-        print(u"交易净  盈利:"+str(self.retained_porfit))
-        print(u"交易总盈利:"+str(self.total_profit))
-        print(u"交易总亏损:"+str(self.total_loss))
-        print(u"总交易次数:"+str(self.total_tradenumber))
-        print(u"交易成功率:"+str(self.success_rate))
-        print(u"最大连续亏损次数:"+str(self.continuous_profit_number))
-        print(u"最大连续盈利次数:"+str(self.continuous_loss_number))
-        print(u"交易最大回撤:"+str(self.max_retracement))
+#         print(u"交易净  盈利:"+str(self.retained_porfit))
+#         print(u"交易总盈利:"+str(self.total_profit))
+#         print(u"交易总亏损:"+str(self.total_loss))
+#         print(u"总交易次数:"+str(self.total_tradenumber))
+#         print(u"交易成功率:"+str(self.success_rate))
+#         print(u"最大连续亏损次数:"+str(self.continuous_profit_number))
+#         print(u"最大连续盈利次数:"+str(self.continuous_loss_number))
+#         print(u"交易最大回撤:"+str(self.max_retracement))
+        
+    def chart_Anlysis(self):
+        """图表分析，主要用到matplotlib工具，主要包含以下部分：
+        1.绘制权益曲线"""
+        
+        #绘制权益曲线
+        print(self.cumsum_profit)
+        fig=plt.figure()
+        ax1=fig.add_subplot(1,1,1)
+#         fig,axes=plt.subplots(2,3)
+#         ax1=axes[0,1] #也可以通过这种方式创建绘图窗口
+        ax1.plot(self.cumsum_profit,linestyle="--",color="g",marker="o")
+#         ax1.set_xticks([])
+        plt.show()
         
         
     
@@ -213,3 +227,4 @@ if __name__=="__main__":
     example=TradeData_Analysis()
     example.TradeData_Clean("E:/test.csv")
     example.mathematical_statistics()
+    example.chart_Anlysis()
