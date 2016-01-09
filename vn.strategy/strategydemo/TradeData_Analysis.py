@@ -197,7 +197,7 @@ class TradeData_Analysis():
         print(u"交易最大回撤:"+str(self.max_retracement))
         
         
-        
+    
             
             
         
