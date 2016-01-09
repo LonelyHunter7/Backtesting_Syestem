@@ -488,6 +488,7 @@ from _collections import deque
 # else:
 #     print("fail")
 from collections import deque
+from numpy import cumsum, maximum
 # s=[1,2,3,4,5,6,7]
 # s.append(1)
 # s.append(2)
@@ -509,5 +510,6 @@ from collections import deque
 # x=[2,3,4,5,-5,-2,-1]
 # for y in x:
 #     if 
-x=range(9)
-print(x)
+x=cumsum(range(9))
+y=maximum(x,x)
+print(y)

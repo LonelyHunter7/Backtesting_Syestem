@@ -1,5 +1,4 @@
 # encoding: UTF-8
-"""成交记录的数据分析系统"""
 
 #引入系统模块
 import csv
@@ -7,6 +6,7 @@ import csv
 #引入第三方模块
 import pandas as pd
 from pandas import Series,DataFrame
+from numpy import cumsum 
 
  
 
@@ -27,13 +27,15 @@ class TradeData_Analysis():
         self.loss={} #交易亏损单的字典
         self.total_profit=0 #交易总盈利
         self.total_loss=0 #交易总亏损
+        self.retained_porfit=0 #交易净利润
         
         self.total_tradenumber=0 #总交易次数
         self.success_rate=0 #交易成功率
         
-        self.continuous_profit_number=0 #连续亏损次数
-        self.continuous_loss_number=0 #连续盈利次数
+        self.continuous_profit_number=0 #最大连续亏损次数
+        self.continuous_loss_number=0 #最大连续盈利次数
         
+        self.max_retracement=0 #交易最大回撤
 
     def TradeData_Clean(self,filename):
         """1.成交记录的数据预处理"""
@@ -101,8 +103,29 @@ class TradeData_Analysis():
                     self.profit[self.frame.ix[index]["Time"]]=prices
                 else: 
                     self.loss[self.frame.ix[index]["Time"]]=prices
+    
+        #交易总盈利
+        for time,value in self.profit.items():
+            profit_values.append(value)
+        self.total_profit=sum(profit_values)*5
+        print(self.profit)
         
-
+        #交易总亏损
+        for time,value in self.loss.items():
+            loss_values.append(value)
+        self.total_loss=sum(loss_values)*5
+        print(self.loss)
+        
+        #交易净利润
+        self.retained_profit=self.total_profit+self.total_loss
+        
+        #总交易次数和成功率
+        self.total_tradenumber=len(self.profit)+len(self.loss) #交易总次数
+        if self.total_tradenumber !=0:
+            self.success_rate="%.2f%%" % (float(len(self.profit))*100/float(self.total_tradenumber)) #交易成功率
+        
+            
+        #最大连续盈利次数和最大连续亏损次数
         for line in range(len(trade)):
             if line==0:
                 if trade[line]<0:
@@ -128,43 +151,50 @@ class TradeData_Analysis():
                 if profit_number>0:
                     profit_numbers.append(profit_number)
                 elif loss_number>0:
-                    loss_numbers.append(loss_number)    
-                
-        #交易总盈利
-        for time,value in self.profit.items():
-            profit_values.append(value)
-        self.total_profit=sum(profit_values)*5
-        print(self.profit)
-        
-        #交易总亏损
-        for time,value in self.loss.items():
-            loss_values.append(value)
-        self.total_loss=sum(loss_values)*5
-        print(self.loss)
-        
-        #总交易次数和成功率
-        self.total_tradenumber=len(self.profit)+len(self.loss) #交易总次数
-        if self.total_tradenumber !=0:
-            self.success_rate="%.2f%%" % (float(len(self.profit))*100/float(self.total_tradenumber)) #交易成功率
-            
-        #最大连续盈利次数和最大连续亏损次数
+                    loss_numbers.append(loss_number)
         self.continuous_profit_number=max(profit_numbers)
         self.continuous_loss_number=max(loss_numbers)
         
         #交易最大回测
+        #需要用到的变量
+        cumsum_profit=cumsum(trade)
+        maximum_switch=False
+        maximum_value=0
+        minimum_swith=False
+        minimum_value=0
+        retracement=0
+        retracement_list=[]
         
+        for i in range(len(cumsum_profit)):
+            if i>=2:
+                if cumsum_profit[i-1]>=cumsum_profit[i-2] and cumsum_profit[i-1]>=cumsum_profit[i]:
+                    maximum_switch=True
+                    retracement=cumsum_profit[i-1]-cumsum_profit[i]
+                    maximum_value=cumsum_profit[i-1]
+                    print(retracement)
+                
+                if maximum_switch==True: 
+                    if cumsum_profit[i-1] !=maximum_value and cumsum_profit[i-1]>=cumsum_profit[i]:
+                        retracement=retracement+(cumsum_profit[i-1]-cumsum_profit[i])
+                    elif cumsum_profit[i-1]<=cumsum_profit[i]:
+                        retracement_list.append(retracement)
+                        retracement=0
+                        maximum_switch=False
+            if i==len(cumsum_profit)-1:
+                retracement_list.append(retracement)
         
-        
-        
-        
-        print(trade)
+        self.max_retracement=max(retracement_list)
+                        
+
+        #打印出各个绩效值
+        print(u"交易净  盈利:"+str(self.retained_porfit))
         print(u"交易总盈利:"+str(self.total_profit))
         print(u"交易总亏损:"+str(self.total_loss))
         print(u"总交易次数:"+str(self.total_tradenumber))
         print(u"交易成功率:"+str(self.success_rate))
         print(u"最大连续亏损次数:"+str(self.continuous_profit_number))
         print(u"最大连续盈利次数:"+str(self.continuous_loss_number))
-        
+        print(u"交易最大回撤:"+str(self.max_retracement))
         
         
         
