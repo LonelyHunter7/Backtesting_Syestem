@@ -510,6 +510,24 @@ from numpy import cumsum, maximum
 # x=[2,3,4,5,-5,-2,-1]
 # for y in x:
 #     if 
-x=cumsum(range(9))
-y=maximum(x,x)
-print(y)
+
+from datetime import datetime,time 
+# d.keys()=[1,2,3,4,5]
+s="2015/3/12 14:50:00"
+g='2015/3/19 13:31:00'
+# for r in y:
+#     peint(e)
+# lists=[]
+# s=datetime.strptime(s,"%Y/%m/%d %H:%M:%S")
+# g=datetime.strptime(g,"%Y/%m/%d %H:%M:%S")
+# d=dict()
+# d[s]=2
+# lists.append(s)
+# lists.append(g)
+# r=sorted([9,3,5,1])
+hh,rr=g.split(" ")
+i=datetime.now()
+s=i.strftime("%Y-%m-%d %H:%M:%S")
+print(type(s))
+# for i in  lists:
+#     print(i)

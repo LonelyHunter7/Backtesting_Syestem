@@ -8,6 +8,7 @@ import pandas as pd
 from pandas import Series,DataFrame
 from numpy import cumsum 
 import matplotlib.pyplot as plt
+from datetime import datetime,time 
  
 
 
@@ -37,6 +38,9 @@ class TradeData_Analysis():
         
         self.cumsum_profit=0 #各个时间带你的权益
         self.max_retracement=0 #交易最大回撤
+        
+        self.time_trade={} #计算每个时间点对应的收益和亏损值，用于后面的绘图
+        
 
     def TradeData_Clean(self,filename):
         """1.成交记录的数据预处理"""
@@ -98,6 +102,7 @@ class TradeData_Analysis():
                     prices=0-prices
                 
                 #将所有的成交值放入到一个列表中，方便进行总交易次数和成功率的计算    
+                self.time_trade[self.frame.ix[index]["Time"]]=prices
                 trade.append(prices)
                 #用字典的目的是为了后期盈利曲线的画图
                 if prices>0:
@@ -187,6 +192,7 @@ class TradeData_Analysis():
                         
 
         #打印出各个绩效值
+        print(trade)
 #         print(u"交易净  盈利:"+str(self.retained_porfit))
 #         print(u"交易总盈利:"+str(self.total_profit))
 #         print(u"交易总亏损:"+str(self.total_loss))
@@ -201,20 +207,43 @@ class TradeData_Analysis():
         1.绘制权益曲线"""
         
         #绘制权益曲线
+        #因为按照字典进行聚合，会出现排序问题，这里经过处理将时间进行提取和排序，主要作为绘图中的X轴
         print(self.cumsum_profit)
+        var=[]
+        time_list=[] #最终经过排序能和吻合累计收益的时间列表
+        for key,value in self.time_trade.items():
+            key=datetime.strptime(key,"%Y/%m/%d %H:%M:%S")
+            var.append(key)
+        var=sorted(var)
+        for i in var:
+            i=i.strftime("%Y/%m/%d %H:%M:%S")
+            time_list.append(i)
+#         d=sorted(key_times.iteritems(),key=lambda asd:asd[0],reverse=False) #对字典进行排序的技巧
+
+        #具体的绘图环节，包括设置绘图的各种格式
         fig=plt.figure()
         ax1=fig.add_subplot(1,1,1)
-#         fig,axes=plt.subplots(2,3)
-#         ax1=axes[0,1] #也可以通过这种方式创建绘图窗口
+# #         fig,axes=plt.subplots(2,3)
+# #         ax1=axes[0,1] #也可以通过这种方式创建绘图窗口
         ax1.plot(self.cumsum_profit,linestyle="--",color="g",marker="o")
-#         ax1.set_xticks([])
+        ticks=ax1.set_xticklabels(time_list,rotation=10,fontsize="small") #设置X轴为时间
+        SD,var1=time_list[0].split(" ") #在图中标题中设置开始日期
+        ED,var2=time_list[len(time_list)-1].split(" ") #在图中标题中设置结束日期
+        print(SD)
+        ax1.set_title("Profit Curve:"+SD+"------"+ED)
+        ax1.set_xlabel("Trade Time")
+        fig.savefig(r"E:\TradeRecord_Vnpy\figpath.svg")
         plt.show()
         
         
     
             
             
-        
+    def save_record(self,fig):
+        """该方法用于储存交易绩效和图表"""
+        now=datetime.now()
+        now=now.strptime("%Y-%m-%d %H:%M:%S")
+        fig.savefig(r"E:\TradeRecord_Vnpy"+"\"+now)
         
         
         
