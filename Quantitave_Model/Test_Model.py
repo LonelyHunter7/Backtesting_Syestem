@@ -556,7 +556,63 @@ with open('E:/txt.csv',"w") as f:
 
 # print(json.dumps(d, encoding='UTF-8', ensure_ascii=False))
 
-
+    def onTick(self,tick):
+        """行情更新的相关处理，
+                                这里的重点是用tick数据合成5分钟的bar数据，这里考虑到使用dataframe速度太慢，
+                                还是用datetime格式时间作比较，进行行情数据的合成"""
+        #将最新一根tick数据存入到缓存中
+        self.currenttick=tick
+        
+        #把tick数据中的时间数据格式转换为datetime的数据格式，方便进行比较
+        ticktime = self.strToTime(tick.time, tick.ms)
+        self.countGet=0
+        five_minute_bar=DataFrame(np.arange(30.).reshape((6,5)),
+                                  columns=["first_minute","2rd_minute","3th_minute","4th_minute","5th_minute"],
+                                  index=["barOpen","barHigh","barLow","barClose","barVolume","barTime"])
+        #检查是否是接收第一笔tick，如果是
+            self.barOpen=tick.openPrice 
+            self.barHigh=tick.highPrice
+            self.barLow=tick.lowPrice
+            self.barClose=tick.lastPrice
+            self.barVolume=tick.volume
+            self.barTime=ticktime
+        
+#         else:
+#             #如果当前传入的tick数据的一分钟时间和当前bar数据的一分钟时间相同
+# #             while self.countGet <=5:
+#                 
+#         if ticktime.minute==self.barTime.minute:
+#             self.barHigh=max(self.barHigh,tick.lastPrice)
+#             self.barLow=min(self.barLow,tick.lastPrice)
+#             self.barClose=tick.lastPrice
+#             self.barVolume +=tick.volume
+#                     self.barTime=ticktime
+#                     
+#                 else:
+#                     self.countGet +=1
+#                     obj=series([self.barOpen,self.barHigh,self.barLow,self.barClose,self.barVolume,self.barTime],
+#                                index=["barOpen","barHigh","barLow","barClose","barVolume","barTime"])
+#                     five_minute_bar[self.counGet-1]=obj
+#                     #对新的一根bar进行赋值
+#                     self.barOpen=tick.lastPrice
+#                     self.barHigh=tick.lastPrice
+#                     self.barLow=tick.lastPrice
+#                     self.barClose=tick.lastPrice
+#                     self.barVolume=tick.volume
+#                     self.barTime=ticktime
+#                 
+#             if self.countGet>5:
+#                 self.barOpen=five_minute_bar["first_minute"]["barOpen"]
+#                 self.barHigh=five_minute_bar.ix["barHigh"].max()
+#                 self.barLow=five_minute_bar.ix["barLow"].min()
+#                 self.barClose=five_minute_bar["5th_minute"]["barClose"]
+#                 self.barVolume=five_minute_bar.ix["barVolume"].sum()
+#                 self.barTime=five_minute_bar["5th_minute"]["barTime"]
+                #首先推送数据给onBar
+                self.onBar(self.barOpen,self.barHigh,self.barLow,
+                           self.barClose,self.Volume,self.barTime)
+            
+                self.countGet=0 
 
 
 

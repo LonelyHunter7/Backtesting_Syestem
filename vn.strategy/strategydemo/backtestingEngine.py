@@ -99,7 +99,6 @@ class BacktestingEngine(object):
                 
             # 将TICK数据读入内存
             self.listDataHistory = [data for data in cx]
-            print(self.listDataHistory)
             
             self.writeLog(u'历史TICK数据载入完成')
         else:

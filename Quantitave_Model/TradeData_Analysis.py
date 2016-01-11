@@ -191,7 +191,7 @@ class TradeData_Analysis():
             if i==len(self.cumsum_profit)-1:
                 retracement_list.append(retracement)
         
-        self.max_retracement=max(retracement_list)
+        self.max_retracement=max(retracement_list)*5
                         
 
         #打印出各个绩效值
@@ -213,7 +213,6 @@ class TradeData_Analysis():
         
         #绘制权益曲线
         #因为按照字典进行聚合，会出现排序问题，这里经过处理将时间进行提取和排序，主要作为绘图中的X轴
-        print(self.cumsum_profit)
         var=[]
         time_list=[] #最终经过排序能和吻合累计收益的时间列表
         for key,value in self.time_trade.items():
@@ -223,6 +222,7 @@ class TradeData_Analysis():
         for i in var:
             i=i.strftime("%Y/%m/%d %H:%M:%S")
             time_list.append(i)
+        print(time_list)
 #         d=sorted(key_times.iteritems(),key=lambda asd:asd[0],reverse=False) #对字典进行排序的技巧
 
         #具体的绘图环节，包括设置绘图的各种格式
@@ -231,10 +231,10 @@ class TradeData_Analysis():
 # #         fig,axes=plt.subplots(2,3)
 # #         ax1=axes[0,1] #也可以通过这种方式创建绘图窗口
         ax1.plot(self.cumsum_profit,linestyle="--",color="g",marker="o")
-        ticks=ax1.set_xticklabels(time_list,rotation=10,fontsize="small") #设置X轴为时间
+        ticks=ax1.set_xticklabels(time_list,fontsize="small") #设置X轴为时间
         SD,var1=time_list[0].split(" ") #在图中标题中设置开始日期
         ED,var2=time_list[len(time_list)-1].split(" ") #在图中标题中设置结束日期
-        print(SD)
+ 
         ax1.set_title("Profit Curve:"+SD+"------"+ED)
         ax1.set_xlabel("Trade Time")
         plt.show()

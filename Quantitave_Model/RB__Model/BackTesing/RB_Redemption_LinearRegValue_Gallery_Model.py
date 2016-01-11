@@ -1,5 +1,10 @@
 # encoding: UTF-8
 
+"""模型概述：
+1.交易品种:螺纹钢RB
+2.测试时间:2015.2.5-2015.4.30
+3.测试的时间周期:1小时"""
+
 
 #首先引入系统模块
 import sys
@@ -79,7 +84,7 @@ class RB_R_L_G_M_Strategy(StrategyTemplate):
         self.initCompleted=False
         
         #读取历史数据的开始日期
-        self.startdata=0
+        self.startdata=None
         
     #----------------------------------------------------------------------
     def loadSetting(self,setting):
@@ -98,9 +103,9 @@ class RB_R_L_G_M_Strategy(StrategyTemplate):
            self.Gallery_LN1=setting["Gallery_LN1"] #内层通道参数
            self.Gallery_LN2=setting["Gallery_LN2"] #外层通道参数
            self.ATRlength=setting["ATRlength"] #ATR参数
-           self.engine.writeLog(self.name+u"读取参数成功")
+           print(self.name+u"读取参数成功")
         except KeyError:
-            self.engine.writeLog(self.name+u"读取参数错误，检查读取参数设置")
+            print(self.name+u"读取参数错误，检查读取参数设置")
             
         try:
             self.initStrategy(setting["startData"])
@@ -111,123 +116,104 @@ class RB_R_L_G_M_Strategy(StrategyTemplate):
     def initStrategy(self,startData=None):
         """初始化策略"""
         self.initCompleted=True
-        self.engine.writeLog(self.name+u"初始化完成")
-        td=timedelta(days=3) #建立三天的时间间隔
-          
-        if startData:
-            cx=self.engine.loadTick(self.symbol,startData-td)
-        else:
-            today=datetime.today().replace(hour=0,minute=0,second=0,microsecond=0)
-            cx=self.engine.loadTick(self.symbol,today-td)
-             
-        if cx:
-            tick=Tick(self.symbol)
-             
-            for data in cx:
-                #tick的各项数据
-                tick = Tick(data['InstrumentID'])
-             
-                tick.openPrice = data['OpenPrice']
-                tick.highPrice = data['HighestPrice']
-                tick.lowPrice = data['LowestPrice']
-                tick.lastPrice = data['LastPrice']
-                 
-                tick.volume = data['Volume']
-                tick.openInterest = data['OpenInterest']
-                 
-                tick.upperLimit = data['UpperLimitPrice']
-                tick.lowerLimit = data['LowerLimitPrice']
-                 
-                tick.time = data['UpdateTime']
-                tick.ms = data['UpdateMillisec']
-                 
-                tick.bidPrice1 = data['BidPrice1']
-                tick.bidPrice2 = data['BidPrice2']
-                tick.bidPrice3 = data['BidPrice3']
-                tick.bidPrice4 = data['BidPrice4']
-                tick.bidPrice5 = data['BidPrice5']
-                 
-                tick.askPrice1 = data['AskPrice1']
-                tick.askPrice2 = data['AskPrice2']
-                tick.askPrice3 = data['AskPrice3']
-                tick.askPrice4 = data['AskPrice4']
-                tick.askPrice5 = data['AskPrice5']   
-                 
-                tick.bidVolume1 = data['BidVolume1']
-                tick.bidVolume2 = data['BidVolume2']
-                tick.bidVolume3 = data['BidVolume3']
-                tick.bidVolume4 = data['BidVolume4']
-                tick.bidVolume5 = data['BidVolume5']
-                 
-                tick.askVolume1 = data['AskVolume1']
-                tick.askVolume2 = data['AskVolume2']
-                tick.askVolume3 = data['AskVolume3']
-                tick.askVolume4 = data['AskVolume4']
-                tick.askVolume5 = data['AskVolume5']   
-                 
-                self.onTick(tick)
-            
-                
-            
-                
+#         self.engine.writeLog(self.name+u"初始化完成")
+#         td=timedelta(days=3) #建立三天的时间间隔
+#           
+#         if startData:
+#             cx=self.engine.loadTick(self.symbol,startData-td)
+#         else:
+#             today=datetime.today().replace(hour=0,minute=0,second=0,microsecond=0)
+#             cx=self.engine.loadTick(self.symbol,today-td)
+#              
+#         if cx:
+#             tick=Tick(self.symbol)
+#              
+#             for data in cx:
+#                 #tick的各项数据
+#                 tick = Tick(data['InstrumentID'])
+#              
+#                 tick.openPrice = data['OpenPrice']
+#                 tick.highPrice = data['HighestPrice']
+#                 tick.lowPrice = data['LowestPrice']
+#                 tick.lastPrice = data['LastPrice']
+#                  
+#                 tick.volume = data['Volume']
+#                 tick.openInterest = data['OpenInterest']
+#                  
+#                 tick.upperLimit = data['UpperLimitPrice']
+#                 tick.lowerLimit = data['LowerLimitPrice']
+#                  
+#                 tick.time = data['UpdateTime']
+#                 tick.ms = data['UpdateMillisec']
+#                  
+#                 tick.bidPrice1 = data['BidPrice1']
+#                 tick.bidPrice2 = data['BidPrice2']
+#                 tick.bidPrice3 = data['BidPrice3']
+#                 tick.bidPrice4 = data['BidPrice4']
+#                 tick.bidPrice5 = data['BidPrice5']
+#                  
+#                 tick.askPrice1 = data['AskPrice1']
+#                 tick.askPrice2 = data['AskPrice2']
+#                 tick.askPrice3 = data['AskPrice3']
+#                 tick.askPrice4 = data['AskPrice4']
+#                 tick.askPrice5 = data['AskPrice5']   
+#                  
+#                 tick.bidVolume1 = data['BidVolume1']
+#                 tick.bidVolume2 = data['BidVolume2']
+#                 tick.bidVolume3 = data['BidVolume3']
+#                 tick.bidVolume4 = data['BidVolume4']
+#                 tick.bidVolume5 = data['BidVolume5']
+#                  
+#                 tick.askVolume1 = data['AskVolume1']
+#                 tick.askVolume2 = data['AskVolume2']
+#                 tick.askVolume3 = data['AskVolume3']
+#                 tick.askVolume4 = data['AskVolume4']
+#                 tick.askVolume5 = data['AskVolume5']   
+#                  
+#                 self.onTick(tick)
+                        
     #----------------------------------------------------------------------    
     def onTick(self,tick):
         """行情更新的相关处理，
                                 这里的重点是用tick数据合成5分钟的bar数据，这里考虑到使用dataframe速度太慢，
                                 还是用datetime格式时间作比较，进行行情数据的合成"""
-        #将最新一根tick数据存入到缓存中
-        self.currenttick=tick
-        
-        #把tick数据中的时间数据格式转换为datetime的数据格式，方便进行比较
-        ticktime = self.strToTime(tick.time, tick.ms)
-        self.countGet=0
-        five_minute_bar=DataFrame(np.arange(30.).reshape((6,5)),
-                                  columns=["first_minute","2rd_minute","3th_minute","4th_minute","5th_minute"],
-                                  index=["barOpen","barHigh","barLow","barClose","barVolume","barTime"])
-        #检查是否是接收第一笔tick，如果是
-            self.barOpen=tick.openPrice 
-            self.barHigh=tick.highPrice
-            self.barLow=tick.lowPrice
-            self.barClose=tick.lastPrice
-            self.barVolume=tick.volume
-            self.barTime=ticktime
-        
-#         else:
-#             #如果当前传入的tick数据的一分钟时间和当前bar数据的一分钟时间相同
-# #             while self.countGet <=5:
-#                 
-#         if ticktime.minute==self.barTime.minute:
-#             self.barHigh=max(self.barHigh,tick.lastPrice)
-#             self.barLow=min(self.barLow,tick.lastPrice)
-#             self.barClose=tick.lastPrice
-#             self.barVolume +=tick.volume
-#                     self.barTime=ticktime
-#                     
-#                 else:
-#                     self.countGet +=1
-#                     obj=series([self.barOpen,self.barHigh,self.barLow,self.barClose,self.barVolume,self.barTime],
-#                                index=["barOpen","barHigh","barLow","barClose","barVolume","barTime"])
-#                     five_minute_bar[self.counGet-1]=obj
-#                     #对新的一根bar进行赋值
-#                     self.barOpen=tick.lastPrice
-#                     self.barHigh=tick.lastPrice
-#                     self.barLow=tick.lastPrice
-#                     self.barClose=tick.lastPrice
-#                     self.barVolume=tick.volume
-#                     self.barTime=ticktime
-#                 
-#             if self.countGet>5:
-#                 self.barOpen=five_minute_bar["first_minute"]["barOpen"]
-#                 self.barHigh=five_minute_bar.ix["barHigh"].max()
-#                 self.barLow=five_minute_bar.ix["barLow"].min()
-#                 self.barClose=five_minute_bar["5th_minute"]["barClose"]
-#                 self.barVolume=five_minute_bar.ix["barVolume"].sum()
-#                 self.barTime=five_minute_bar["5th_minute"]["barTime"]
-                #首先推送数据给onBar
-                self.onBar(self.barOpen,self.barHigh,self.barLow,
-                           self.barClose,self.Volume,self.barTime)
-            
-                self.countGet=0 
+                                
+        td=timedelta(minutes=60) #取五分钟的时间间隔 
+        self.currentTick=tick
+        ticktime=datetime.strptime(tick.time,"%Y/%m/%d %H:%M:%S")
+
+        #检查是否是接收第一笔tick
+        if self.barOpen == 0:
+            # 初始化新的K线数据
+            self.barOpen = tick.openPrice
+            self.barHigh = tick.highPrice
+            self.barLow = tick.lowPrice
+            self.barClose = tick.lastPrice
+            self.barVolume = tick.volume
+            self.barTime = ticktime
+        else:
+             # 如果是当前一分钟内的数据
+            if ticktime-self.barTime <=td:
+                 # 汇总TICK生成K线   
+                self.barHigh = max(self.barHigh, tick.lastPrice)
+                self.barLow = min(self.barLow, tick.lastPrice)
+                self.barClose = tick.lastPrice
+                self.barVolume = self.barVolume + tick.volume
+                self.barTime = ticktime                
+            # 如果是新一分钟的数据
+            else:
+                # 首先推送K线数据
+                self.onBar(self.barOpen, self.barHigh, self.barLow, self.barClose, 
+                           self.barVolume, self.barTime)
+                   
+                # 初始化新的K线数据
+                self.barOpen = tick.openPrice
+                self.barHigh = tick.highPrice
+                self.barLow = tick.lowPrice
+                self.barClose = tick.lastPrice
+                self.barVolume = tick.volume
+                self.barTime = ticktime     
+
                 
     #----------------------------------------------------------------------        
     def onTrade(self,trade):
@@ -238,7 +224,7 @@ class RB_R_L_G_M_Strategy(StrategyTemplate):
             self.pos -=trade.volume
         
         log=self.name+u'当前仓位：'+str(self.pos)
-        self.engine.writeLog(u"更新仓位完成")
+        print(u"更新仓位完成")
         
     #----------------------------------------------------------------------          
     def onOrder(self,orderRef):
@@ -267,6 +253,10 @@ class RB_R_L_G_M_Strategy(StrategyTemplate):
     def algo_action(self):
         """具体的策略"""
         #首先进行一下格式转换，把list转换为talib需要的array数组格式
+        self.listClose=[float(x) for x in self.listClose] #因为array只能接受字符串格式，所以需要率先将所有整型数据进行格式转换
+        self.listOpen=[float(x) for x in self.listOpen]
+        self.listHigh=[float(x) for x in self.listHigh]
+        self.listLow=[float(x) for x in self.listLow] 
         open=np.array(self.listOpen)
         high=np.array(self.listHigh)
         low=np.array(self.listLow)
@@ -320,54 +310,54 @@ class RB_R_L_G_M_Strategy(StrategyTemplate):
             """初始化完成的情况下，才能进行交易"""
             if entry_buy_condition1:
                 if self.pos==0:
-                    self.buy(self.currentTick.upperLimit,1)
-                    self.engine.writeLog(self.name+u"进场信号一，买入一手")
+                    self.buy(self.currentTick.lastPrice, 1,self.currentTick.time)
+                    print(self.name+u"进场信号一，买入一手")
                 elif self.pos<0:
-                    self.cover(self.currentTick.upperLimit, 1)
-                    self.buy(self.currentTick.upperLimit,1)
-                    self.engine.writeLog(self.name+u"进场信号一，买入一手")
+                    self.cover(self.currentTick.lastPrice, 1,self.currentTick.time)
+                    self.buy(self.currentTick.lastPrice, 1,self.currentTick.time)
+                    print(self.name+u"进场信号一，买入一手(平仓后)")
             
             if entry_buy_condition2:
                 if self.pos==0:
-                    self.buy(self.currentTick.upperLimit,1)
-                    self.engine.writeLog(self.name+u"进场信号二，买入一手")
+                    self.buy(self.currentTick.lastPrice, 1,self.currentTick.time)
+                    print(self.name+u"进场信号二，买入一手")
                 elif self.pos<0:
-                    self.cover(self.currentTick.upperLimit, 1)
-                    self.buy(self.currentTick.upperLimit,1)
-                    self.engine.writeLog(self.name+u"进场信号二，买入一手")
+                    self.cover(self.currentTick.lastPrice, 1,self.currentTick.time)
+                    self.buy(self.currentTick.lastPrice, 1,self.currentTick.time)
+                    print(self.name+u"进场信号二，买入一手(平仓后)")
                 
             if entry_short_condition1:
                 if self.pos==0 :
-                    self.short(self.currentTick.upperLimit,1)
-                    self.engine.writeLog(self.name+u"进场信号一，卖出一手")
+                    self.short(self.currentTick.lastPrice, 1,self.currentTick.time)
+                    print(self.name+u"进场信号一，卖出一手")
                 elif self.pos >0:
-                    self.sell(self.currentTick.upperLimit, 1)
-                    self.short(self.currentTick.upperLimit,1)
-                    self.engine.writeLog(self.name+u"进场信号一，买出一手")
+                    self.sell(self.currentTick.lastPrice, 1,self.currentTick.time)
+                    self.short(self.currentTick.lastPrice, 1,self.currentTick.time)
+                    print(self.name+u"进场信号一，买出一手(平仓后)")
                     
             if entry_short_condition2:
                 if self.pos==0 :
-                    self.short(self.currentTick.upperLimit,1)
-                    self.engine.writeLog(self.name+u"进场信号二，卖出一手")
+                    self.short(self.currentTick.lastPrice, 1,self.currentTick.time)
+                    print(self.name+u"进场信号二，卖出一手")
                 elif self.pos >0:
-                    self.sell(self.currentTick.upperLimit, 1)
-                    self.short(self.currentTick.upperLimit,1)
-                    self.engine.writeLog(self.name+u"进场信号二，买出一手")        
+                    self.sell(self.currentTick.lastPrice, 1,self.currentTick.time)
+                    self.short(self.currentTick.lastPrice, 1,self.currentTick.time)
+                    print(self.name+u"进场信号二，买出一手(平仓后)")        
             
             if exit_buy_conditon1 or exit_buy_conditon2:
-                self.sell(self.currentTick.upperLimit,1)
-                self.engine.writeLog(self.name+u"达到平仓条件，卖出平仓")
+                self.sell(self.currentTick.lastPrice, 1,self.currentTick.time)
+                print(self.name+u"达到平仓条件，卖出平仓")
                 
             if exit_short_conditon1 or exit_short_conditon2:
-                self.cover(self.currentTick.upperLimit,1)
-                self.engine.writeLog(self.name+u"达到平仓条件，买入平仓")
+                self.cover(self.currentTick.lastPrice, 1,self.currentTick.time)
+                print(self.name+u"达到平仓条件，买入平仓")
 
     #----------------------------------------------------------------------       
-    def strToTime(self, t, ms):
-        """从字符串时间转化为time格式的时间"""
-        hh, mm, ss = t.split(':')
-        tt = time(int(hh), int(mm), int(ss), microsecond=ms)
-        return tt
+#     def strToTime(self, t, ms):
+#         """从字符串时间转化为time格式的时间"""
+#         hh, mm, ss = t.split(':')
+#         tt = time(int(hh), int(mm), int(ss), microsecond=ms)
+#         return tt
 
 ########################################################################
 def print_Log(event):

@@ -1,11 +1,12 @@
 eclipse.preferences.version=1
-encoding//Quantitave_Model/RB__Model/RB_Redemption_LinearRegValue_Gallery_Model.py=UTF-8
+encoding//Quantitave_Model/RB__Model/BackTesing/Backtesting_RB_Redemption_LinearRegValue_Gallery_Model.py=UTF-8
+encoding//Quantitave_Model/RB__Model/BackTesing/RB_Redemption_LinearRegValue_Gallery_Model.py=UTF-8
 encoding//Quantitave_Model/Test_Model.py=UTF-8
 encoding//Quantitave_Model/Test_Model2.py=UTF-8
 encoding//Quantitave_Model/TradeData_Analysis.py=UTF-8
 encoding//vn.strategy/backtestingEngine.py=UTF-8
 encoding//vn.strategy/strategyEngine.py=UTF-8
-encoding//vn.strategy/strategydemo/Backtesting_RB_Redemption_LinearRegValue_Gallery_Model.py=UTF-8
+encoding//vn.strategy/strategydemo/Backtesting_Test.py=UTF-8
 encoding//vn.strategy/strategydemo/backtestingEngine.py=UTF-8
 encoding//vn.strategy/strategydemo/demoApi.py=UTF-8
 encoding//vn.strategy/strategydemo/demoBacktesting.py=UTF-8
