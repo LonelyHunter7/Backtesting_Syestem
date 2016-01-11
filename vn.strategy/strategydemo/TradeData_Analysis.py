@@ -41,6 +41,9 @@ class TradeData_Analysis():
         
         self.time_trade={} #计算每个时间点对应的收益和亏损值，用于后面的绘图
         
+        self.fig=None #当前的画图fig对象
+        self.record={} #用于储存绩效的字典
+        
 
     def TradeData_Clean(self,filename):
         """1.成交记录的数据预处理"""
@@ -192,16 +195,18 @@ class TradeData_Analysis():
                         
 
         #打印出各个绩效值
-        print(trade)
-#         print(u"交易净  盈利:"+str(self.retained_porfit))
-#         print(u"交易总盈利:"+str(self.total_profit))
-#         print(u"交易总亏损:"+str(self.total_loss))
-#         print(u"总交易次数:"+str(self.total_tradenumber))
-#         print(u"交易成功率:"+str(self.success_rate))
-#         print(u"最大连续亏损次数:"+str(self.continuous_profit_number))
-#         print(u"最大连续盈利次数:"+str(self.continuous_loss_number))
-#         print(u"交易最大回撤:"+str(self.max_retracement))
-        
+        print(u"交易净盈利:"+str(self.retained_porfit))
+        print(u"交易总盈利:"+str(self.total_profit))
+        print(u"交易总亏损:"+str(self.total_loss))
+        print(u"总交易次数:"+str(self.total_tradenumber))
+        print(u"交易成功率:"+str(self.success_rate))
+        print(u"最大连续亏损次数:"+str(self.continuous_profit_number))
+        print(u"最大连续盈利次数:"+str(self.continuous_loss_number))
+        print(u"交易最大回撤:"+str(self.max_retracement))
+
+# print(json.dumps(dict, encoding='UTF-8', ensure_ascii=False)) #这一步用于打印有中文字符的字典，视情况决定是否使用
+
+       
     def chart_Anlysis(self):
         """图表分析，主要用到matplotlib工具，主要包含以下部分：
         1.绘制权益曲线"""
@@ -221,8 +226,8 @@ class TradeData_Analysis():
 #         d=sorted(key_times.iteritems(),key=lambda asd:asd[0],reverse=False) #对字典进行排序的技巧
 
         #具体的绘图环节，包括设置绘图的各种格式
-        fig=plt.figure()
-        ax1=fig.add_subplot(1,1,1)
+        self.fig=plt.figure()
+        ax1=self.fig.add_subplot(1,1,1)
 # #         fig,axes=plt.subplots(2,3)
 # #         ax1=axes[0,1] #也可以通过这种方式创建绘图窗口
         ax1.plot(self.cumsum_profit,linestyle="--",color="g",marker="o")
@@ -232,28 +237,16 @@ class TradeData_Analysis():
         print(SD)
         ax1.set_title("Profit Curve:"+SD+"------"+ED)
         ax1.set_xlabel("Trade Time")
-        fig.savefig(r"E:\TradeRecord_Vnpy\figpath.svg")
         plt.show()
         
-        
-    
             
-            
-    def save_record(self,fig):
-        """该方法用于储存交易绩效和图表"""
-        now=datetime.now()
-        now=now.strptime("%Y-%m-%d %H:%M:%S")
-        fig.savefig(r"E:\TradeRecord_Vnpy"+"\"+now)
-        
-        
-        
-        
-        
-        
-        
+    def save_record(self,address):
+        """该方法用于储存绩效图表"""
+        self.fig.savefig(address) #自行填入地址
 
 if __name__=="__main__":
     example=TradeData_Analysis()
     example.TradeData_Clean("E:/test.csv")
     example.mathematical_statistics()
     example.chart_Anlysis()
+#     example.save_record()

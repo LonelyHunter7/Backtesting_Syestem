@@ -511,23 +511,52 @@ from numpy import cumsum, maximum
 # for y in x:
 #     if 
 
-from datetime import datetime,time 
-# d.keys()=[1,2,3,4,5]
-s="2015/3/12 14:50:00"
-g='2015/3/19 13:31:00'
-# for r in y:
-#     peint(e)
-# lists=[]
-# s=datetime.strptime(s,"%Y/%m/%d %H:%M:%S")
-# g=datetime.strptime(g,"%Y/%m/%d %H:%M:%S")
-# d=dict()
-# d[s]=2
-# lists.append(s)
-# lists.append(g)
-# r=sorted([9,3,5,1])
-hh,rr=g.split(" ")
-i=datetime.now()
-s=i.strftime("%Y-%m-%d %H:%M:%S")
-print(type(s))
-# for i in  lists:
+# from datetime import datetime,time 
+# # d.keys()=[1,2,3,4,5]
+# s="2015/3/12 14:50:00"
+# g='2015/3/19 13:31:00'
+# # for r in y:
+# #     peint(e)
+# # lists=[]
+# # s=datetime.strptime(s,"%Y/%m/%d %H:%M:%S")
+# # g=datetime.strptime(g,"%Y/%m/%d %H:%M:%S")
+# # d=dict()
+# # d[s]=2
+# # lists.append(s)
+# # lists.append(g)
+# # r=sorted([9,3,5,1])
+# hh,rr=g.split(" ")
+# i=datetime.now()
+# s=i.strftime("%Y-%m-%d %H:%M:%S")
+# print(type(s))
+# # for i in  lists:
 #     print(i)
+
+import json
+import csv
+d={}
+d[u"我的爱"]=3
+d["y"]=5
+f=open(r"E:\my.txt","w")
+s=json.dumps(d, encoding='UTF-8', ensure_ascii=False)
+b=json.loads(s)
+# print(type(b))
+# print(s)
+# for key in s: 
+#     print(key)
+# f.close()
+ 
+with open('E:/txt.csv',"w") as f:
+        writer=csv.writer(f,delimiter=",")
+        for key,value in d.items():
+#             print((key,value))
+            writer.writerow([key+u":"+str(value)])
+#             writer.writerow([value])
+        print(u"交易记录储存完毕")
+
+# print(json.dumps(d, encoding='UTF-8', ensure_ascii=False))
+
+
+
+
+
