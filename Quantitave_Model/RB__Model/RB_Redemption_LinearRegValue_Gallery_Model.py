@@ -173,7 +173,8 @@ class RB_R_L_G_M_Strategy(StrategyTemplate):
     #----------------------------------------------------------------------    
     def onTick(self,tick):
         """行情更新的相关处理，
-                                这里的重点是用tick数据合成5分钟的bar数据"""
+                                这里的重点是用tick数据合成5分钟的bar数据，这里考虑到使用dataframe速度太慢，
+                                还是用datetime格式时间作比较，进行行情数据的合成"""
         #将最新一根tick数据存入到缓存中
         self.currenttick=tick
         
@@ -374,58 +375,58 @@ def print_Log(event):
     print(str(datetime.now())+u","+log)
     
 ########################################################################
-def main():
-    """在CMD中演示策略"""
-    #创建pyqt应用对象
-    app = QtCore.QCoreApplication(sys.argv)
-
-    #引入主策略
-    me=MainEngine()
-    
-    #注册打印日志事件监听函数到相关事件上去
-    me.ee.register(EVENT_LOG,print_Log)
-    
-    #登陆
-    userid = '044025'
-    password = 'e67726802'
-    brokerid = '9999'
-    mdAddress = 'tcp://180.168.146.187:10011'
-    tdAddress = 'tcp://180.168.146.187:10001'
-    
-    me.login(userid, password, brokerid, mdAddress, tdAddress)
-    
-    #阻塞10秒，用于读取合约等
-    sleep(5)
-    
-    #创建策略引擎
-    se=StrategyEngine(me.ee,me)
-    
-    #创建策略
-    setting={}
-    setting["LinearReglength"]=25 #线性回归通道线参数
-    setting["smoothlength"]=4  #平滑参数
-    setting["MACD_fastlength"]=12   
-    setting["MACD_slowlength"]=26
-    setting["MACD_XAverage_Length"]=9
-    setting["RSI_length"]=14 #RSI指标参数
-    setting["ROC_length"]=5 #ROC指标的参数 
-    setting["StopLoss_N1"]=3 #移动止损参数1
-    setting["StopLoss_N2"]=2 #移动止损参数2
-    setting["StopLoss_N3"]=50 #移动止损参数3
-    setting["Gallery_LN1"]=1 #内层通道参数
-    setting["Gallery_LN2"]=2 #外层通道参数
-    setting["ATRlength"]=10 #ATR参数  
-    se.createStrategy(u"线性回归线通道策略","TA605",RB_R_L_G_M_Strategy,setting)
-    
-    #开始所有策略
-    se.startAll()
-    
-    #让策略连续运行
-    sys.exit(app.exec_())
-
-########################################################################
-if __name__=="__main__":
-    main()    
+# def main():
+#     """在CMD中演示策略"""
+#     #创建pyqt应用对象
+#     app = QtCore.QCoreApplication(sys.argv)
+# 
+#     #引入主策略
+#     me=MainEngine()
+#     
+#     #注册打印日志事件监听函数到相关事件上去
+#     me.ee.register(EVENT_LOG,print_Log)
+#     
+#     #登陆
+#     userid = '044025'
+#     password = 'e67726802'
+#     brokerid = '9999'
+#     mdAddress = 'tcp://180.168.146.187:10011'
+#     tdAddress = 'tcp://180.168.146.187:10001'
+#     
+#     me.login(userid, password, brokerid, mdAddress, tdAddress)
+#     
+#     #阻塞10秒，用于读取合约等
+#     sleep(5)
+#     
+#     #创建策略引擎
+#     se=StrategyEngine(me.ee,me)
+#     
+#     #创建策略
+#     setting={}
+#     setting["LinearReglength"]=25 #线性回归通道线参数
+#     setting["smoothlength"]=4  #平滑参数
+#     setting["MACD_fastlength"]=12   
+#     setting["MACD_slowlength"]=26
+#     setting["MACD_XAverage_Length"]=9
+#     setting["RSI_length"]=14 #RSI指标参数
+#     setting["ROC_length"]=5 #ROC指标的参数 
+#     setting["StopLoss_N1"]=3 #移动止损参数1
+#     setting["StopLoss_N2"]=2 #移动止损参数2
+#     setting["StopLoss_N3"]=50 #移动止损参数3
+#     setting["Gallery_LN1"]=1 #内层通道参数
+#     setting["Gallery_LN2"]=2 #外层通道参数
+#     setting["ATRlength"]=10 #ATR参数  
+#     se.createStrategy(u"线性回归线通道策略","TA605",RB_R_L_G_M_Strategy,setting)
+#     
+#     #开始所有策略
+#     se.startAll()
+#     
+#     #让策略连续运行
+#     sys.exit(app.exec_())
+# 
+# ########################################################################
+# if __name__=="__main__":
+#     main()    
 
         
         

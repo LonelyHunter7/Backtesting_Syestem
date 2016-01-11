@@ -1,5 +1,9 @@
 # encoding: UTF-8
 
+#首先添加需要的地址方便进行模块引用
+import sys
+sys.path.append(r"E:\MAIZIPYTHON\Quantitave_Strategy_Model\Quantitave_Model")
+
 from strategyEngine import *
 from backtestingEngine import *
 from Test_Model2 import RB_R_L_G_M_Strategy
